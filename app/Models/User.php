@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use App\Models\Month;
-use App\Models\UserMonth;
+use App\Models\Year;
+use App\Models\UserYear;
 
 class User extends Authenticatable
 {
@@ -46,15 +46,14 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    public function months(){
-
-        return $this->belongsToMany(Month::class);
+    public function years()
+    {
+        return $this->belongsToMany(Year::class, 'user_years')->withPivot('id');
     }
 
-
-    public function userMonths()
+    public function contributions()
     {
-        return $this->hasMany(UserMonth::class);
+        return $this->hasManyThrough(Contribution::class, UserYear::class, 'user_id', 'user_year_id');
     }
 
     

@@ -14,13 +14,13 @@ return new class extends Migration
         Schema::create('contributions', function (Blueprint $table) {
             $table->id();
             $table->decimal('amount', 10, 2);
-            $table->string('year');
+            $table->smallInteger('month');
             $table->string('telephone');
             $table->string('network');
-            $table->unsignedBigInteger('user_month_id');
+            $table->unsignedBigInteger('user_year_id');
             $table->timestamps();
 
-            $table->foreign('user_month_id')->references('id')->on('user_month')->onDelete('cascade');
+            $table->foreign('user_year_id')->references('id')->on('user_years')->onDelete('cascade');
         });
     }
 

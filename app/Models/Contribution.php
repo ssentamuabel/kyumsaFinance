@@ -4,8 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-use App\Models\UserMonth;
+use App\Models\UserYear;
 
 class Contribution extends Model
 {
@@ -14,16 +15,26 @@ class Contribution extends Model
     protected $table = 'contributions';
     protected $fillable = [
         'amount',
-        'year',
+        'month',
         'telephone',
         'network',
-        'user_month_id'
+        'user_year_id'
     ];
 
 
 
-    public function userMonths(): BelongsTo
+    public function userYear()
     {
-        return $this->belongsTo(UserMonth::class);
+        return $this->belongsTo(UserYear::class, 'user_year_id');
+    }
+
+    public function user()
+    {
+        return $this->userYear->user();
+    }
+
+    public function year()
+    {
+        return $this->userYear->year();
     }
 }

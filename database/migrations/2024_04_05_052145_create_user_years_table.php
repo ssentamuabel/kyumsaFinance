@@ -11,14 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_month', function (Blueprint $table) {
-           
+        Schema::create('user_years', function (Blueprint $table) {
+            $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('month_id');
+            $table->unsignedBigInteger('year_id');            
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('month_id')->references('id')->on('months')->onDelete('cascade');
+            $table->foreign('year_id')->references('id')->on('years')->onDelete('cascade');
+
+
+            $table->unique(['user_id', 'year_id']);
+           
         });
     }
 
@@ -27,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_month');
+        Schema::dropIfExists('user_years');
     }
 };
