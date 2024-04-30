@@ -41,4 +41,5 @@ Route::get('/joints', [UserYearController::class, 'index']);
 Route::post('/contribution/{id}/create', [ContributionController::class, 'store']);
 Route::get('/contributions', [ContributionController::class, 'index']);
 Route::get('/user/{id}/contributions', [UserController::class, 'getContributions']);
+Route::get('/contributions/notification', [ContributionController::class, 'notification']);
 

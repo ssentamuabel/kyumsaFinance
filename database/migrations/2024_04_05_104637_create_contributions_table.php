@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('telephone');
             $table->string('network');
             $table->unsignedBigInteger('user_year_id');
+            $table->Boolean('message')->default(true);
             $table->timestamps();
 
             $table->foreign('user_year_id')->references('id')->on('user_years')->onDelete('cascade');
