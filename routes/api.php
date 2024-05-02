@@ -18,28 +18,29 @@ use App\Http\Controllers\ContributionController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+// Routes that require token verification
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+
+
+    Route::get('/users', [UserController::class, 'index']);
+
+    Route::post('/year/create', [YearController::class, 'store']);
+    Route::get('/years', [YearController::class, 'index']);
+
+    Route::post('/joint/create', [UserYearController::class, 'store']);
+    Route::get('/joints', [UserYearController::class, 'index']);
+
+    Route::post('/contribution/{id}/create', [ContributionController::class, 'store']);
+    Route::get('/contributions', [ContributionController::class, 'index']);
+    Route::get('/user/{id}/contributions', [UserController::class, 'getContributions']);
+    Route::get('/contributions/notification', [ContributionController::class, 'notification']);
+
+    Route::get('/users/communication', [ContributionController::class, 'massMessage']);
 });
 
-
-
+// Routes accessible without authentication
 Route::post('/auth/register', [UserController::class, 'store']);
 Route::post('/auth/login', [UserController::class, 'loginUser']);
-
-
-Route::post('/year/create', [YearController::class, 'store']);
-Route::get('/years', [YearController::class, 'index']);
-
-
-
-Route::post('/joint/create', [UserYearController::class, 'store']);
-Route::get('/joints', [UserYearController::class, 'index']);
-
-
-
-Route::post('/contribution/{id}/create', [ContributionController::class, 'store']);
-Route::get('/contributions', [ContributionController::class, 'index']);
-Route::get('/user/{id}/contributions', [UserController::class, 'getContributions']);
-Route::get('/contributions/notification', [ContributionController::class, 'notification']);
-

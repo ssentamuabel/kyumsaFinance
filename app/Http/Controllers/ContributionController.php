@@ -82,9 +82,19 @@ class ContributionController extends Controller
 
                 $user->load('years');
 
+                // echo $year;
               
                 $useryear = UserYear::where('user_id', $user->id)
                                         ->where('year_id', $year['id'])->first();
+
+                
+                if (!$useryear){
+
+                    $useryear = UserYear::create([
+                        'user_id' => $user->id,
+                        'year_id' => $year->id
+                    ]);
+                }
                 
                                         
                 $currentDate = date('d-m-Y H:i:s');
@@ -230,15 +240,33 @@ class ContributionController extends Controller
 
     }
 
-    public function massMessage($msg){
+    public function massMessage(Request $request){
         try {
             //code...
+
+            $validate = Validator::make($request->all(), 
+            [
+                'reason' => 'required',
+                'message' => 'required',
+                
+          
+            ]);
+
+
+
+            if($validate->fails()){
+                return response()->json([
+                    'status' => false,
+                    'message' => 'validation error',
+                    'errors' => $validate->errors()
+                ], 401);
+            }
 
             $response = [];
 
             foreach(User::all() as $user){
 
-                $res = $this->sendSms($user->contact, $msg);
+                $res = $this->sendSms($user->contact, $request->message);
                 $response[$user->name] = $res['status'];
 
             }
