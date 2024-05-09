@@ -6,10 +6,12 @@ import Dashboard from './src/Pages/Dashboard';
 import Contributions from './src/Pages/Contributions';
 import Sms from './src/Pages/Sms';
 import Users from './src/Pages/Users';
+import Header from './src/components/Header'
 
 function App() {
     return (
         <SideBar>
+            <Header />
             <Routes>
                 <Route path='/' element={<Dashboard/>} />
                 <Route path='/contributions' element={<Contributions/>} />

@@ -4,7 +4,7 @@ import React from 'react'
 
 const Dashboard = ()=>{
     return (
-        <div>
+        <div className="dashboard">
             <h1>This is the Dashboard</h1>
         </div>
     )

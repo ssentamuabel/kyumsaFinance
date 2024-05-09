@@ -5,7 +5,8 @@ import {
     FaMoneyBillWave,
     FaMailBulk,
     FaUsers,
-    FaBars
+    FaBars,
+    FaMosque
 
 
 } from 'react-icons/fa'
@@ -25,7 +26,7 @@ const SideBar = ({children})=>{
         },
         {
             path : "/sms",
-            name : "Sms",
+            name : "Messages",
             icon : <FaMailBulk />
         },
         {
@@ -38,9 +39,11 @@ const SideBar = ({children})=>{
         <div className='container'>
             <div className="sidebar">
                 <div className="top-section">
-                    <h1 className="site-logo">Logo</h1>
-                    <div className="bars"><FaBars/></div>
+                    <div className="logo"><FaMosque/></div>
+                    <h1 className="title">AKFSI</h1>
+                   
                 </div>
+                <div className='nav'>
                 {
                     menuItem.map((item, index)=>(
                         <NavLink  to={item.path} key={index} className='link'   >
@@ -49,6 +52,9 @@ const SideBar = ({children})=>{
                         </NavLink>
                     ))
                 }
+
+                </div>
+                
             </div>
             <main>{children}</main>
         </div>
