@@ -6,27 +6,40 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Contribution;
 use App\Models\UserYear;
+use App\Models\sms_auth;
 use App\Models\Year;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 // require 'vendor/autoload.php';
 use AfricasTalking\SDK\AfricasTalking;
 use Illuminate\Support\Facades\Log;
+use App\Http\MobileMoney\MtnMomo;
+
 
 
 // DB::enableQueryLog();
 
-define('USER_NAME', 'sandbox');
-define('API_KEY', '2a6c5a830f34739fa3511a9570972d64b924e8b5726aeaa09b69e1e4f90e30d7');
+
 date_default_timezone_set('Africa/Kampala');
 
 class ContributionController extends Controller
 {
     //
+   
+    private $apiKey = 'b0542e7c41ca4ec08a06f30dc46fd6e1';
+    private $subscriptionKey = '9d92781dace14e7cbd587193e7f8e6fd';
+    private $userId = '4cc6b44c-ca5b-4dd8-ade8-858f61b89cf3';
+    private $accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSMjU2In0.eyJjbGllbnRJZCI6IjRjYzZiNDRjLWNhNWItNGRkOC1hZGU4LTg1OGY2MWI4OWNmMyIsImV4cGlyZXMiOiIyMDI0LTA1LTA5VDEzOjE2OjUyLjY5MSIsInNlc3Npb25JZCI6ImFmMjBlNzk1LTE3NGItNDUyMC04ZTBkLTMwZDJjOTMyYTBmYiJ9.W7HlF2NT_quN8M6U_wBZXCbCXbnGxhlxtPiikbcQYfCrErBqMZr3ZGs4LrLMnzUlOjvMajhjzvgCws4yE4fKDVEGyfMElC5uclgPBXfAgglI1NhH1eMqd5Cobnk9MDGPs4uJrsQPLCA-79sI2yZY-ktRzkTS4EWc8b_HrSUnB2dCGFWE-jX4cjbaWMz4SalK1lcz225Zh3A1hRX-f7t_jiJDEjPKynjAxHtS8-cc0uunzjg5IVNiKkapGB7WEdNs-PTKhlkjYUZKUOEFTrQfr9n-KWY6HBZwUyykUTaZ-6TBmRDO0GeBHyOiHb_MTPNPgZLDXTxPGW4C8uN4m2MZFQ';
 
     
     public function store(Request $request, $id)
     {
+        $month = [
+            '1' => 'January', '2' => 'February', '3' => 'March', '4' => 'April',
+            '5' => 'May', '6' => 'June', '7' => 'July',  '8' => 'August', '9' => 'September',
+            '10' => 'October', '11' => 'November', '12'=> 'December'
+
+        ];
         try {
 
             // print_r($request);
@@ -40,7 +53,6 @@ class ContributionController extends Controller
                 'year' => 'required'
           
             ]);
-
 
             if($validate->fails()){
                 return response()->json([
@@ -77,7 +89,6 @@ class ContributionController extends Controller
                     if ($yr['year'] === $request->year){$year = $yr;}
                 }
                
-
                 // SMS NOTIFICATION
 
                 $user->load('years');
@@ -101,14 +112,13 @@ class ContributionController extends Controller
                 $notification_msg = '';
                
 
-                $message = "Receipt of UGx:".$request->amount." for the month ";
-                $message .= $request->month;
-                $message .= " at ".$currentDate." through ". $request->telephone ;
+                // $message = "Receipt of UGx:".$request->amount." for the month ";
+                // $message .= $request->month;
+                // $message .= " at ".$currentDate." through ". $request->telephone ;
+
+                $message = "AKFSI: Reciept of UGx 5000 for the month April  has been received successfully. May Allah suffice for you.";
                
                 $notification_msg = $this->sendSms($user->contact, $message);
-
-                
-               
 
                 $contrib = Contribution::create([
                     'amount' => $request->amount,
@@ -119,11 +129,9 @@ class ContributionController extends Controller
                     
                 ]);
 
-                
-
                 return response()->json([
                     'status' => true,
-                    'notification' => $notification_msg['status'],
+                    'notification' => $notification_msg,
                     'msg'=> $message,
                     'message' => 'Created Successfully',
                     
@@ -144,6 +152,9 @@ class ContributionController extends Controller
             ], 500);
         }
     }
+
+
+
     public function index(){
         try{
 
@@ -181,8 +192,9 @@ class ContributionController extends Controller
         }
     }
 
-    public function notification(){
 
+
+    public function notification(){
 
         try {
 
@@ -196,6 +208,7 @@ class ContributionController extends Controller
                     'year'=> $date[2]
                 ]);
 
+               
                 foreach(User::all() as $user){
 
                     UserYear::create([
@@ -205,8 +218,13 @@ class ContributionController extends Controller
                 }
 
             }
-
-            $msg = "Assalam alaikum warahmatullahi wabarakaatuh\nWe are requested to make our ".date('F')." contribution  (5000/=) to help our young brothers and sisters at KYUMSA to have their activities with a little less effort. ";
+            $msg = "AKFSI: Assalam alaikum. 
+            We are requested to make our" .date('f')."5000/= contribution to help in running  KYUMSA  activities with  less effort.  Our contributions can be sent on the following numbers: 
+            SSENTAMU ABEL  
+            0741659861  
+            0780269754 
+            May Allah accept from us all.";
+            // $msg = "Assalam alaikum, We are requested to make our ".date('F')." contribution  (5000/=) to support  KYUMSA  activities. Payments can be made on 0741659861, 0780269754 (SSENTAMU ABEL)";
             
             $month = $date[1];
 
@@ -214,20 +232,29 @@ class ContributionController extends Controller
                 $query->where('month',  $month);
             })->get();
 
-           
+        
+
+            $receipients = "";
+
 
             foreach ($users as $user) {
-                // Send the message
-                // echo $user->contact;
-                $res = $this->sendSms($user->contact, $msg);
-                $response[$user->name] = $res['status'];
+        
+                $receipients .= $user->contact .',';
             }
+
+            $numbers = rtrim($receipients, ",");
+
+
+         
+
+            $response = $this->sendSms($numbers, $msg);
+            
 
 
             return response()->json([
                 'status' => 'true',
-                'rensponse' => $response,
-                'message' => $msg
+                'response' => $response,
+                
             ]);
 
 
@@ -240,6 +267,7 @@ class ContributionController extends Controller
 
     }
 
+
     public function massMessage(Request $request){
         try {
             //code...
@@ -247,11 +275,9 @@ class ContributionController extends Controller
             $validate = Validator::make($request->all(), 
             [
                 'reason' => 'required',
-                'message' => 'required',
-                
+                'message' => 'required',                
           
             ]);
-
 
 
             if($validate->fails()){
@@ -290,8 +316,11 @@ class ContributionController extends Controller
 
     public function sendSms($number, $message){
 
+        $auth = sms_auth::findorFail(1);
 
-        $AT   = new AfricasTalking("sandbox", "2a6c5a830f34739fa3511a9570972d64b924e8b5726aeaa09b69e1e4f90e30d7");
+        
+
+        $AT   = new AfricasTalking($auth->user_name, $auth->api_key);
 
         $sms = $AT->sms();
         $from ="AKFSI";
@@ -299,8 +328,7 @@ class ContributionController extends Controller
                     // Thats it, hit send and we'll take care of the rest
             $notification_msg = $sms->send([
                 'to'      => $number,
-                'message' => $message,
-                'from'    => $from
+                'message' => $message
             ]);
 
                     
@@ -309,5 +337,62 @@ class ContributionController extends Controller
         } catch (Exception $e) {
             echo "Error: siisisis";
         }
+    }
+
+
+    public function testMomo(){
+
+        try{
+
+            $callbackUrl = 'http://hkdk.events/a4jlgobsbs0jiu';
+            $domain = 'hkdk.events';
+            $mtnMomo = new MtnMomo($this->subscriptionKey, $callbackUrl, $domain);
+
+         
+            // $url = 'https://sandbox.momodeveloper.mtn.com/v1_0/apiuser';
+            // $createUser = $mtnMomo->apiUser($url, $this->userId);
+
+            // $response = null;
+
+            // if ($createUser == 201){
+
+            //     $response  = $mtnMomo->apiToken($url, $this->userId);
+            // }
+            
+            $response = $mtnMomo->accessToken($this->userId, $this->apiKey);
+
+            // if ($response->status == 200){
+
+            //     $accessToken = $response->body()->
+            // }
+
+            $requestBody = [
+                "amount" => "4000",
+                "currency" => "EUR",
+                "externalId" => "213456999",
+                "payer" => [
+                    "partyIdType" => "MSISDN",
+                    "partyId" => "256780269754"
+                ],
+                "payerMessage" => "Message",
+                "payeeNote" => "Message"
+            ];
+
+            $response = $mtnMomo->requestToPay($this->accessToken, $requestBody);
+
+            return response()->json([
+                'status' => 'true',
+                'rensponse' => $response
+                
+            ]);
+
+        }catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ]);
+        }
+
     }
 }

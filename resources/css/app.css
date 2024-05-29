@@ -95,7 +95,7 @@ main{
 
 /* contriibution page */
 
-.contribution-container{
+.contribution-container, .sms-container{
     height:85vh;
     background: #fff;
     width:99%;
@@ -165,6 +165,12 @@ main{
     /* border: 1px solid green; */
 }
 
+.trans-section .filter{
+    display: flex;
+    justify-content:space-around;
+    padding:5px;
+    gap: 10em;
+}
 
 
 
@@ -234,5 +240,89 @@ thead, tbody tr {
     color:green;
     background:none;
     cursor:pointer;
+
+}
+
+/* sms page styles*/
+
+
+.sms-container .wrapper{
+     display: flex;
+     justify-content: space-between;
+}
+
+.reminder{
+    position: relative;
+
+}
+#tooltip-text{
+    visibility: hidden;
+    background-color: black;
+    color: #fff;
+    width:250px;
+    text-align: center;
+    padding: 5px 0;
+
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 4;
+    top: 70%;;
+    left:70%;
+}
+
+.reminder:hover #tooltip-text {
+    visibility: visible;
+  }
+
+
+/* end of sms styles*/
+
+
+
+/* general styles*/
+
+input, select {
+    width:auto;
+    border: 1px solid #15204a;
+    margin:3px;
+    box-sizing: border-box;
+    
+}
+select {
+    background-color: #fff;
+}
+option{
+    background-color: #fff;
+    color:#15204a;
+    padding: 0 5px;
+}
+input[type=text]{
+    color: #15204a;
+    background-color: #fff;
+    align-items: center;
+    padding: 0 5px;
+    font-size: 10px;
+
+}
+input:focus, select:focus{
+    outline: none;
+}
+
+#medium-button{
+    font-size: 15px;
+    padding: 10px 15px;
+    font-weight: 400;
+}
+
+#small-button{
+    font-size: 15px;
+    padding: 5px 10px;
+    font-weight: 300;
+}
+
+#large-button{
+    font-size: 18px;
+    padding: 15px 25px;
+    font-weight: 600;
 
 }

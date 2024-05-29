@@ -1,14 +1,15 @@
 import React from 'react'
 
 
-const FilterComponent = ({options, ...props})=>{
+const Select = ({options, ...props})=>{
 
+    
     const opt = options.map((item, key) =>(
         <option key ={key} value={item.value}>{item.label}</option>
     ))
 
     return (
-        <select name="props.name" id="props.id">
+        <select  name="props.name" id="props.id">
             
             {opt}
            
@@ -17,4 +18,10 @@ const FilterComponent = ({options, ...props})=>{
 }
 
 
-export default FilterComponent
+
+
+
+
+
+
+export default Select

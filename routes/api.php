@@ -34,9 +34,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/joints', [UserYearController::class, 'index']);
 
     Route::post('/contribution/{id}/create', [ContributionController::class, 'store']);
-    Route::get('/contributions', [ContributionController::class, 'index']);
-    Route::get('/user/{id}/contributions', [UserController::class, 'getContributions']);
-    Route::get('/contributions/notification', [ContributionController::class, 'notification']);
+ 
+  
+    
 
     Route::get('/users/communication', [ContributionController::class, 'massMessage']);
 });
@@ -44,3 +44,8 @@ Route::middleware('auth:sanctum')->group(function () {
 // Routes accessible without authentication
 Route::post('/auth/register', [UserController::class, 'store']);
 Route::post('/auth/login', [UserController::class, 'loginUser']);
+Route::get('/mtnmomo', [ContributionController::class, 'testMomo']);
+Route::get('/contributions/notification', [ContributionController::class, 'notification']);
+Route::get('/user/{id}/contributions', [UserController::class, 'getContributions']);
+Route::get('/contributions', [ContributionController::class, 'index']);
+Route::post('/contribution/{id}/create', [ContributionController::class, 'store']);
